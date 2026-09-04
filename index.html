@@ -102,129 +102,7 @@
 
   img.mark{ border-radius:50%; box-shadow:0 0 0 1px var(--hairline), 0 8px 24px rgba(0,0,0,0.4); }
 
-  /* ============ ACCESS GATE ============ */
-  .gate{
-    position:fixed;
-    inset:0;
-    z-index:20;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:var(--bg);
-    transition:opacity 0.5s ease, filter 0.5s ease;
-  }
-  .gate.leaving{
-    opacity:0;
-    filter:blur(6px);
-    pointer-events:none;
-  }
-  .gate-card{
-    position:relative;
-    z-index:1;
-    width:100%;
-    max-width:380px;
-    margin:0 24px;
-    padding:40px 28px 32px;
-    background:var(--surface);
-    border:1px solid var(--hairline);
-    border-radius:24px;
-    text-align:center;
-    box-shadow:0 30px 80px rgba(0,0,0,0.5);
-  }
-  .gate-icon{
-    width:52px;height:52px;
-    margin:0 auto 18px;
-    border-radius:14px;
-    background:var(--surface-raised);
-    border:1px solid var(--hairline);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--gold);
-  }
-  .gate-icon svg{ width:24px;height:24px; }
-  .gate-card h1{
-    font-size:26px;
-    margin-top:2px;
-  }
-  .gate-card .sub{
-    margin-left:auto;
-    margin-right:auto;
-    font-size:13.5px;
-  }
-
-  .code-field{
-    margin-top:26px;
-    position:relative;
-  }
-  .code-field input{
-    width:100%;
-    background:var(--surface-raised);
-    border:1px solid var(--hairline);
-    color:var(--text);
-    font-family:'Space Mono', monospace;
-    font-size:17px;
-    letter-spacing:0.3em;
-    text-align:center;
-    padding:15px 16px;
-    border-radius:12px;
-    outline:none;
-    transition:border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .code-field input::placeholder{
-    color:var(--text-faint);
-    letter-spacing:0.2em;
-  }
-  .code-field input:focus{
-    border-color:var(--gold);
-    box-shadow:0 0 0 3px var(--gold-dim);
-  }
-  .code-field input.error{
-    border-color:var(--danger);
-    box-shadow:0 0 0 3px var(--danger-dim);
-  }
-
-  .gate-status{
-    min-height:18px;
-    margin-top:10px;
-    font-size:12.5px;
-    font-family:'Space Mono', monospace;
-    color:var(--danger);
-    opacity:0;
-    transition:opacity 0.2s ease;
-  }
-  .gate-status.show{ opacity:1; }
-
-  @keyframes shake{
-    0%,100%{ transform:translateX(0); }
-    20%{ transform:translateX(-8px); }
-    40%{ transform:translateX(7px); }
-    60%{ transform:translateX(-5px); }
-    80%{ transform:translateX(3px); }
-  }
-  .shake{ animation:shake 0.4s ease; }
-
-  .unlock-btn{
-    margin-top:16px;
-    width:100%;
-    background:var(--gold);
-    color:#151005;
-    font-family:'Manrope',sans-serif;
-    font-weight:700;
-    font-size:15px;
-    padding:15px 20px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    transition:transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-    box-shadow:0 8px 24px rgba(201,162,39,0.22);
-  }
-  .unlock-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 30px rgba(201,162,39,0.3); }
-  .unlock-btn:disabled{ opacity:0.75; cursor:default; transform:none; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
 
   .spinner{
     width:16px;height:16px;
@@ -235,21 +113,6 @@
     display:none;
     flex-shrink:0;
   }
-  .unlock-btn.loading .spinner{ display:inline-block; }
-  .unlock-btn.loading .btn-label{ opacity:0.85; }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
-
-  .gate-foot{
-    margin-top:22px;
-    font-size:11px;
-    font-family:'Space Mono', monospace;
-    color:var(--text-faint);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-  }
-  .gate-foot svg{ width:11px;height:11px; opacity:0.7; }
 
   /* ============ APP CONTENT ============ */
   .app{
@@ -284,7 +147,7 @@
   }
   @media (prefers-reduced-motion: reduce){
     .ping{ animation:none; display:none; }
-    .app, .gate{ transition:none; }
+    .app{ transition:none; }
   }
 
   /* Platform toggle */
@@ -423,6 +286,125 @@
   }
   .counter-sub strong{ color:var(--text); }
 
+  /* Auto-detect status line */
+  .detect-note{
+    margin-top:14px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'Space Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.04em;
+    color:var(--text-muted);
+    background:var(--surface);
+    border:1px solid var(--hairline);
+    padding:7px 14px;
+    border-radius:100px;
+  }
+  .detect-note .dot{
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-dim);
+    flex-shrink:0;
+  }
+  .detect-note.auto-firing{ color:var(--gold-bright); }
+
+  /* QR / share card */
+  .qr-card{
+    margin-top:44px;
+    width:100%;
+    background:var(--surface);
+    border:1px solid var(--hairline);
+    border-radius:20px;
+    padding:26px 24px 22px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .qr-frame{
+    position:relative;
+    width:168px;
+    height:168px;
+    padding:12px;
+    background:#0d0e10;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .qr-frame canvas{
+    border-radius:6px;
+    display:block;
+  }
+  .qr-frame .corner{
+    position:absolute;
+    width:18px;height:18px;
+    border-color:var(--gold);
+    border-style:solid;
+    border-width:0;
+  }
+  .qr-frame .corner.tl{ top:2px; left:2px; border-top-width:2px; border-left-width:2px; border-top-left-radius:6px; }
+  .qr-frame .corner.tr{ top:2px; right:2px; border-top-width:2px; border-right-width:2px; border-top-right-radius:6px; }
+  .qr-frame .corner.bl{ bottom:2px; left:2px; border-bottom-width:2px; border-left-width:2px; border-bottom-left-radius:6px; }
+  .qr-frame .corner.br{ bottom:2px; right:2px; border-bottom-width:2px; border-right-width:2px; border-bottom-right-radius:6px; }
+
+  .qr-caption{
+    margin-top:16px;
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .qr-sub{
+    margin-top:6px;
+    font-size:12.5px;
+    color:var(--text-muted);
+    text-align:center;
+    max-width:260px;
+    line-height:1.5;
+  }
+
+  .link-row{
+    margin-top:20px;
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .link-box{
+    flex:1;
+    min-width:0;
+    background:var(--surface-raised);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    padding:11px 14px;
+    font-family:'Space Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .icon-btn{
+    flex-shrink:0;
+    width:38px;height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--surface-raised);
+    border:1px solid var(--hairline);
+    border-radius:10px;
+    color:var(--text);
+    cursor:pointer;
+    transition:border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .icon-btn:hover{ border-color:var(--gold); color:var(--gold-bright); }
+  .icon-btn:active{ transform:scale(0.94); }
+  .icon-btn svg{ width:16px;height:16px; }
+  .icon-btn.copied{ border-color:var(--gold); color:var(--gold-bright); }
+
   .roles-strip{
     margin-top:36px;
     display:flex;
@@ -459,38 +441,8 @@
 
   <div class="zone-field"></div>
 
-  <!-- ============ ACCESS GATE ============ -->
-  <div class="gate" id="gate">
-    <div class="gate-card">
-      <div class="gate-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-      </div>
-      <div class="eyebrow" id="gateEyebrow">Restricted · Zone Access</div>
-      <h1>Enter your <em>zone code</em></h1>
-      <p class="sub">This build is limited to invited testers. Enter the access code you were given to continue.</p>
-
-      <form id="gateForm" novalidate>
-        <div class="code-field">
-          <input id="codeInput" type="password" inputmode="text" autocomplete="off" placeholder="Access code" maxlength="32" autofocus>
-        </div>
-        <div class="gate-status" id="gateStatus" role="alert"></div>
-        <button type="submit" class="unlock-btn" id="unlockBtn">
-          <span class="spinner"></span>
-          <span class="btn-label" id="unlockLabel">Verify &amp; continue</span>
-        </button>
-      </form>
-
-      <div class="gate-foot">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Verified against ZoneMarket servers
-      </div>
-    </div>
-  </div>
-
   <!-- ============ MAIN APP ============ -->
-  <div class="app" id="app">
+  <div class="app visible" id="app">
     <div class="wrap">
       <div class="eyebrow">Nairobi · Kenya</div>
       <img class="mark" src="/icon1.jpg" width="40" height="40" alt="ZoneMarket">
@@ -512,6 +464,8 @@
         </button>
       </div>
 
+      <div class="detect-note" id="detectNote"><span class="dot"></span><span id="detectLabel">Detecting your device…</span></div>
+
       <div class="cta-stage">
         <div class="ping"></div>
         <div class="ping d2"></div>
@@ -526,6 +480,25 @@
       </div>
 
       <p class="ios-note" id="iosNote" hidden>Opens TestFlight to install the iOS beta — Apple requires beta apps to be distributed this way rather than as a direct file.</p>
+
+      <div class="qr-card">
+        <div class="qr-frame">
+          <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+          <canvas id="qrCanvas" width="144" height="144"></canvas>
+        </div>
+        <div class="qr-caption">Scan to install</div>
+        <p class="qr-sub">Point any phone camera at this code. It opens this page and starts the right download automatically — Android or iOS.</p>
+
+        <div class="link-row">
+          <div class="link-box" id="shareLinkBox">zonmrkt.com</div>
+          <button class="icon-btn" id="copyLinkBtn" type="button" aria-label="Copy link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button class="icon-btn" id="shareLinkBtn" type="button" aria-label="Share link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+          </button>
+        </div>
+      </div>
 
       <div class="meta-row">
         <span id="versionTag">v5.0</span>
@@ -557,99 +530,27 @@
   </div>
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
   // Point this at your deployed API domain
   const API_BASE = 'https://api.zonmrkt.com';
 
-  // ---------------------------------------------------------------
-  // ACCESS GATE
-  // The code is checked server-side only — nothing here can decide
-  // pass/fail on its own. Expected endpoint contract:
-  //   POST {API_BASE}/api/v1/access/verify   body: { code }
-  //   -> 200 { valid: true,  token: "<short-lived token>" }
-  //   -> 200 { valid: false }
-  // On success we keep the token in memory only (no localStorage)
-  // and attach it as a header on the download request so the APK/
-  // TestFlight link can't be hit without having verified first.
-  // ---------------------------------------------------------------
-  let accessToken = null;
-
-  const gate = document.getElementById('gate');
   const app = document.getElementById('app');
-  const gateForm = document.getElementById('gateForm');
-  const codeInput = document.getElementById('codeInput');
-  const gateStatus = document.getElementById('gateStatus');
-  const unlockBtn = document.getElementById('unlockBtn');
-  const unlockLabel = document.getElementById('unlockLabel');
-  const gateCard = document.querySelector('.gate-card');
-  const gateEyebrow = document.getElementById('gateEyebrow');
 
-  function setGateError(message){
-    gateStatus.textContent = message;
-    gateStatus.classList.add('show');
-    codeInput.classList.add('error');
-    gateEyebrow.textContent = 'Access denied';
-    gateEyebrow.classList.add('danger');
-    gateCard.classList.remove('shake');
-    void gateCard.offsetWidth; // restart animation
-    gateCard.classList.add('shake');
-  }
-
-  function clearGateError(){
-    gateStatus.classList.remove('show');
-    codeInput.classList.remove('error');
-    gateEyebrow.textContent = 'Restricted · Zone Access';
-    gateEyebrow.classList.remove('danger');
-  }
-
-  function setVerifying(isVerifying){
-    unlockBtn.disabled = isVerifying;
-    unlockBtn.classList.toggle('loading', isVerifying);
-    unlockLabel.textContent = isVerifying ? 'Verifying…' : 'Verify & continue';
-  }
-
-  async function verifyCode(code){
-    const res = await fetch(`${API_BASE}/api/v1/apk/verify`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
-    });
-    if (!res.ok) throw new Error('Server error');
-    return res.json(); // { valid, token }
-  }
-
-  gateForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const code = codeInput.value.trim();
-    if (!code){
-      setGateError('Enter the code you were given.');
-      return;
-    }
-    clearGateError();
-    setVerifying(true);
-    try{
-      const result = await verifyCode(code);
-      if (result.valid){
-        accessToken = result.token || null;
-        unlockLabel.textContent = 'Access granted';
-        setTimeout(() => {
-          gate.classList.add('leaving');
-          app.classList.add('visible');
-          setTimeout(() => { gate.style.display = 'none'; }, 520);
-          loadStats();
-        }, 350);
-      } else {
-        setVerifying(false);
-        setGateError('That code isn\u2019t valid. Check it and try again.');
-      }
-    }catch(err){
-      console.error('Access verification failed', err);
-      setVerifying(false);
-      setGateError('Couldn\u2019t reach the server. Try again in a moment.');
-    }
-  });
-
-  codeInput.addEventListener('input', clearGateError);
+  // ---------------------------------------------------------------
+  // HOW SOMEONE ARRIVED HERE
+  // A QR code encodes this same page URL with ?src=qr appended.
+  // That's the only thing that distinguishes a scan from someone
+  // just opening the link manually — there's no other reliable
+  // signal a browser can give us. Everything else (counter,
+  // download endpoint, platform detection) behaves identically
+  // either way; we just tag the download with where it came from
+  // so the dashboard can split "scanned" vs "manual" if you want,
+  // while the total install counter always counts both together.
+  // ---------------------------------------------------------------
+  const params = new URLSearchParams(window.location.search);
+  const arrivedViaQr = params.get('src') === 'qr';
+  const entryRef = arrivedViaQr ? 'qr' : 'web';
 
   // ---------------------------------------------------------------
   // PLATFORM TOGGLE + DOWNLOAD
@@ -659,7 +560,7 @@
       label: 'Download for Android',
       version: 'v2.0',
       size: 'APK',
-      endpoint: '/api/v1/apk/download?ref=web',
+      endpoint: '/api/v1/apk/download',
       icon: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
       showIosNote: false
     },
@@ -667,7 +568,7 @@
       label: 'Get on TestFlight',
       version: 'v2.0',
       size: 'iOS 15+',
-      endpoint: '/api/v1/ios/testflight?ref=web',
+      endpoint: '/api/v1/ios/testflight',
       icon: '<path d="M12 20l-6-6 1.4-1.4L12 17.2l4.6-4.6L18 14z"/><path d="M12 4v13"/>',
       showIosNote: true
     }
@@ -681,8 +582,10 @@
   const versionTag = document.getElementById('versionTag');
   const sizeTag = document.getElementById('sizeTag');
   const iosNote = document.getElementById('iosNote');
+  const detectNote = document.getElementById('detectNote');
+  const detectLabel = document.getElementById('detectLabel');
 
-  function applyPlatform(p){
+  function applyPlatform(p, { fromUser = false } = {}){
     currentPlatform = p;
     const cfg = platforms[p];
     downloadLabel.textContent = cfg.label;
@@ -694,34 +597,56 @@
     platformToggle.querySelectorAll('.platform-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.platform === p);
     });
+
+    if (fromUser){
+      detectLabel.textContent = p === 'android' ? 'Set to Android' : 'Set to iOS';
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // DEVICE DETECTION
+  // Reads the user agent to pick Android vs iOS automatically, so
+  // whoever lands here doesn't have to think about which button
+  // is theirs. They can still switch manually with the toggle.
+  // ---------------------------------------------------------------
+  function detectPlatform(){
+    const ua = navigator.userAgent || navigator.vendor || '';
+    if (/android/i.test(ua)) return 'android';
+    if (/iphone|ipad|ipod/i.test(ua)) return 'ios';
+    // iPadOS 13+ reports as Mac, but touch support gives it away
+    if (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1) return 'ios';
+    return null; // desktop / unknown — leave the default toggle in place
+  }
+
+  const detected = detectPlatform();
+  if (detected){
+    applyPlatform(detected);
+    detectLabel.textContent = `Detected ${detected === 'android' ? 'Android' : 'iOS'} — ready to install`;
+  } else {
+    detectLabel.textContent = 'On desktop? Scan the QR code with your phone instead';
   }
 
   platformToggle.addEventListener('click', (e) => {
     const btn = e.target.closest('.platform-btn');
     if (!btn) return;
-    applyPlatform(btn.dataset.platform);
+    applyPlatform(btn.dataset.platform, { fromUser: true });
   });
 
-  downloadBtn.addEventListener('click', async () => {
+  async function startDownload(){
     if (downloadBtn.classList.contains('busy')) return;
     const cfg = platforms[currentPlatform];
     const originalLabel = downloadLabel.textContent;
 
     downloadBtn.classList.add('busy');
-    downloadLabel.textContent = 'Verifying…';
+    downloadLabel.textContent = 'Preparing…';
 
     try{
-      // Re-check the session token server-side right before handing
-      // out the file/link, so a stale or shared page can't download
-      // without a fresh, valid access grant.
-      const res = await fetch(`${API_BASE}${cfg.endpoint}`, {
-        headers: accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}
-      });
-      if (!res.ok) throw new Error('Download not authorized');
+      const res = await fetch(`${API_BASE}${cfg.endpoint}?ref=${entryRef}`);
+      if (!res.ok) throw new Error('Download request failed');
 
       downloadLabel.textContent = 'Starting download…';
       const data = await res.json().catch(() => null);
-      const target = data && data.url ? data.url : `${API_BASE}${cfg.endpoint}`;
+      const target = data && data.url ? data.url : `${API_BASE}${cfg.endpoint}?ref=${entryRef}`;
       window.location.href = target;
     }catch(err){
       console.error('Download failed', err);
@@ -730,10 +655,74 @@
     }finally{
       setTimeout(() => downloadBtn.classList.remove('busy'), 900);
     }
-  });
+  }
+
+  downloadBtn.addEventListener('click', startDownload);
+
+  // Arrived by scanning the QR code: fire the right download
+  // automatically after a short, visible countdown, so a phone
+  // camera scan turns straight into an install with no tapping.
+  // Manual visitors (typed/shared link, no ?src=qr) never auto-fire.
+  if (arrivedViaQr && detected){
+    detectNote.classList.add('auto-firing');
+    let seconds = 2;
+    detectLabel.textContent = `Starting ${detected === 'android' ? 'Android' : 'iOS'} download in ${seconds}…`;
+    const tick = setInterval(() => {
+      seconds -= 1;
+      if (seconds <= 0){
+        clearInterval(tick);
+        detectLabel.textContent = 'Starting download…';
+        startDownload();
+      } else {
+        detectLabel.textContent = `Starting ${detected === 'android' ? 'Android' : 'iOS'} download in ${seconds}…`;
+      }
+    }, 1000);
+  }
 
   // ---------------------------------------------------------------
-  // LIVE INSTALL COUNTER (unchanged behaviour, now starts post-gate)
+  // QR CODE + SHAREABLE LINK
+  // The QR always encodes the clean canonical URL plus ?src=qr, so
+  // any phone that scans it lands here and auto-downloads per the
+  // detection above. The visible link box shares the same clean
+  // URL (no src param) for manual visits/copy-paste/socials.
+  // ---------------------------------------------------------------
+  const canonicalUrl = `${window.location.origin}${window.location.pathname}`;
+  const qrTargetUrl = `${canonicalUrl}?src=qr`;
+  const shareLinkBox = document.getElementById('shareLinkBox');
+  const copyLinkBtn = document.getElementById('copyLinkBtn');
+  const shareLinkBtn = document.getElementById('shareLinkBtn');
+
+  shareLinkBox.textContent = canonicalUrl.replace(/^https?:\/\//, '');
+
+  const qrCanvas = document.getElementById('qrCanvas');
+  if (window.QRCode && qrCanvas){
+    QRCode.toCanvas(qrCanvas, qrTargetUrl, {
+      width: 144,
+      margin: 0,
+      color: { dark: '#EDEDEC', light: '#00000000' }
+    }, (err) => { if (err) console.error('QR generation failed', err); });
+  }
+
+  copyLinkBtn.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(canonicalUrl);
+      copyLinkBtn.classList.add('copied');
+      setTimeout(() => copyLinkBtn.classList.remove('copied'), 1500);
+    }catch(err){
+      console.error('Copy failed', err);
+    }
+  });
+
+  if (navigator.share){
+    shareLinkBtn.addEventListener('click', () => {
+      navigator.share({ title: 'ZoneMarket', text: 'Get the ZoneMarket app', url: canonicalUrl }).catch(() => {});
+    });
+  } else {
+    shareLinkBtn.hidden = true;
+  }
+
+  // ---------------------------------------------------------------
+  // LIVE INSTALL COUNTER — counts every install, scanned or manual
   // ---------------------------------------------------------------
   function renderDigits(total, animate){
     const digitsEl = document.getElementById('digits');
@@ -760,6 +749,8 @@
       document.getElementById('last7').textContent = '—';
     }
   }
+
+  loadStats();
 
   // Live updates: no refresh needed, counter bumps the instant someone else installs
   const socket = io(API_BASE, { transports: ['websocket', 'polling'] });

@@ -711,7 +711,7 @@
           <button class="icon-btn" id="copyLinkBtn" type="button" aria-label="Copy link">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           </button>
-          <button class="icon-btn" id="shareLinkBtn" type="button" aria-label="Share link">
+          <button class="icon-btn" id="shareLinkBtn" type="button" aria-label="Share QR code">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
           </button>
         </div>
@@ -3308,15 +3308,84 @@ var qrcode = function() {
     }
   });
 
-  if (navigator.share){
-    shareLinkBtn.addEventListener('click', () => {
-      navigator.share({ title: 'ZoneMarket', text: 'Get the ZoneMarket app', url: canonicalUrl }).catch(() => {});
-    });
-  } else {
-    shareLinkBtn.hidden = true;
+  // ---------------------------------------------------------------
+  // SHARE THE QR — AS AN IMAGE, NOT JUST THE LINK
+  // Copy always copies the link (above). Share sends the actual QR
+  // picture, rendered at higher resolution with a solid background
+  // so it stays scannable wherever it lands (chat apps, printouts,
+  // dark or light backgrounds alike) rather than the near-invisible
+  // light-on-transparent version used for the on-page display.
+  // ---------------------------------------------------------------
+  function buildShareableQrCanvas(text){
+    const qr = qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    const count = qr.getModuleCount();
+    const margin = 4;   // quiet zone, in modules
+    const cellSize = 10; // px per module — sharp at typical share/print sizes
+    const size = (count + margin * 2) * cellSize;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0A0B0D';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#EDEDEC';
+    for (let row = 0; row < count; row++){
+      for (let col = 0; col < count; col++){
+        if (qr.isDark(row, col)){
+          ctx.fillRect((col + margin) * cellSize, (row + margin) * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+    return canvas;
   }
 
-  // ---------------------------------------------------------------
+  function downloadCanvasAsPng(canvas, filename){
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  shareLinkBtn.addEventListener('click', async () => {
+    let canvas;
+    try{
+      canvas = buildShareableQrCanvas(qrTargetUrl);
+    }catch(err){
+      console.error('Could not build shareable QR', err);
+      return;
+    }
+
+    try{
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      if (blob){
+        const file = new File([blob], 'zonemarket-qr.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })){
+          await navigator.share({
+            files: [file],
+            title: 'ZoneMarket',
+            text: 'Scan to install ZoneMarket'
+          });
+          return;
+        }
+      }
+      // No file-sharing support on this browser: fall back to sharing the link.
+      if (navigator.share){
+        await navigator.share({ title: 'ZoneMarket', text: 'Get the ZoneMarket app', url: canonicalUrl });
+        return;
+      }
+      // No Web Share API at all: just hand them the image to save/send manually.
+      downloadCanvasAsPng(canvas, 'zonemarket-qr.png');
+    }catch(err){
+      if (err && err.name === 'AbortError') return; // user closed the share sheet
+      console.error('Share failed', err);
+      downloadCanvasAsPng(canvas, 'zonemarket-qr.png');
+    }
+  });
+
   // ---------------------------------------------------------------
   // DOWNLOAD LOG (code-gated)
   // Separate from the download flow itself — downloads stay open to

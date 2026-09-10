@@ -652,6 +652,15 @@
     outline:2px solid var(--gold-bright);
     outline-offset:2px;
   }
+  /* Selects the recent installs section container */
+#recent-installs-section, 
+div:has(> h1:contains("Recent installs")) {
+    max-height: 400px !important;    /* Forces an explicit height boundary */
+    overflow-y: auto !important;     /* Instructs the browser to enable vertical scrolling */
+    -webkit-overflow-scrolling: touch; /* Ensures fluid inertial scrolling on mobile phones */
+    padding-right: 8px;              /* Prevents the new scrollbar from hiding content */
+}
+  
 </style>
 </head>
 <body>
